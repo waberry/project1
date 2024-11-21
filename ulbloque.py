@@ -206,58 +206,56 @@ def play_game(game: dict) -> int:
 
     while current_moves < game['max_moves']:
         clear_screen()
+        print(get_controls_str())
         print(get_game_str(game, current_moves))
-
-        if selected_car is None:
-            print("\nSelect car (A-Z) or press ESC to quit:")
-            key = getkey().upper()
-            if key == 'ESCAPE':
-                return 2  # abandoned
-
-            # accept only key of size 1 letter
-            if key.isalpha() and len(key) == 1:
-                car_index = ord(key) - ord('A')
-                if 0 <= car_index < len(game['cars']):
-                    selected_car = car_index
-        else:
-            print(f"\nMove car {chr(65 + selected_car)} (arrow keys) or press any other key to cancel:")
-            key = getkey()
-            if key in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
-                move = move_car(game, selected_car, key)
-                if move:
+        key = getkey().upper()
+        
+        # abandoned
+        if key == 'ESCAPE':
+            print("Leaving Game! See you soon!")
+            return 2
+        if key in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
+            # proceed to move proper car
+            if selected_car is not None:
+                if move_car(game, selected_car, key):
                     current_moves += 1
-                if is_win(game):
-                    clear_screen()
-                    print(get_game_str(game, current_moves))
-                    print(f"\nCongratulations! You've won in {current_moves} moves!")
-                    return 0  # victory!
-            selected_car = None
-
+        elif key.isalpha() and len(key) == 1:
+            car_index = ord(key) - ord('A')
+            if 0 <= car_index < len(game['cars']):
+                selected_car = car_index
+       
+        if is_win(game):
+            clear_screen()
+            print(get_game_str(game, current_moves))
+            print(f"\nCongratulations! You've won in {current_moves} moves!")
+            return 0  # victory!
+    
+    # end of loop without outcome
     clear_screen()
     print(get_game_str(game, current_moves))
     print("\nGame Over! You've run out of moves.")
     return 1  # defeat (out of moves)
 
-def get_usage_str() -> str:
-   """Return the usage string for the game."""
+def get_controls_str() -> str:
+   """Return the how to play string for the game."""
    return """
-Usage: python3 ulbloque.py <game_file>
-
 Controls:
  - Letters (A-Z): Select a car
  - Arrow keys: Move selected car
  - ESC: Quit game
-
-Examples:
- python3 ulbloque.py game1.txt
- python3 ulbloque.py puzzle2.txt
 """
 
 
 if __name__ == '__main__':
+    usage = """
+Usage: python3 ulbloque.py <game_file>
+Examples:
+ python3 ulbloque.py game1.txt
+ python3 ulbloque.py puzzle2.txt
+    """
     moves = 0
     if len(sys.argv) != 2:
-        print(get_usage_str())
+        print(usage)
         exit(1)
     game = parse_game(sys.argv[1])
     result = play_game(game)
