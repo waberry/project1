@@ -237,13 +237,16 @@ def play_game(game: dict) -> int:
     return 1  # defeat (out of moves)
 
 def get_controls_str() -> str:
-   """Return the how to play string for the game."""
-   return """
-Controls:
- - Letters (A-Z): Select a car
- - Arrow keys: Move selected car
- - ESC: Quit game
-"""
+    controls = "\n".join([
+        "╔════════════════════════╗",
+        "║      CONTROLES         ║",
+        "╠════════════════════════╣",
+        "║ A-Z : Pick a car       ║",
+        "║ ↑↓←→: Déplacer         ║", 
+        "║ ESC : Quitter          ║",
+        "╚════════════════════════╝"
+    ])
+    return controls
 
 
 if __name__ == '__main__':
@@ -253,7 +256,6 @@ Examples:
  python3 ulbloque.py game1.txt
  python3 ulbloque.py puzzle2.txt
     """
-    moves = 0
     if len(sys.argv) != 2:
         print(usage)
         exit(1)
