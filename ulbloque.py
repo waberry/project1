@@ -1,3 +1,7 @@
+# Daher Ahmed
+# Waberi
+# 000353308
+
 from getkey import *
 import sys
 
